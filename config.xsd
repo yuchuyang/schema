@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:include schemaLocation="types.xsd" />
+<xs:include schemaLocation="HvCapacitiestypes.xsd" />
+<xs:include schemaLocation="VMtypes.xsd" />
+
+<xs:complexType name="DebugOptionsType">
+  <xs:annotation>
+    <xs:documentation>Options for debugging the hypervisor.</xs:documentation>
+  </xs:annotation>
+
+  <xs:all>
+    <xs:element name="RELEASE" type="Boolean">
+      <xs:annotation>
+	<xs:documentation>Set this to true in order to build an image for production.</xs:documentation>
+      </xs:annotation>
+    </xs:element>
+    <xs:element name="SERIAL_CONSOLE" type="SerialConsoleOptions" />
+    <xs:element name="MEM_LOGLEVEL" type="LogLevelType" />
+    <xs:element name="NPK_LOGLEVEL" type="LogLevelType" />
+    <xs:element name="CONSOLE_LOGLEVEL" type="LogLevelType" />
+    <xs:element name="LOG_DESTINATION" type="LogLevelType" />
+    <xs:element name="LOG_BUF_SIZE" type="HexFormat" />
+  </xs:all>
+</xs:complexType>
+
+<xs:complexType name="FeatureOptionsType">
+  <xs:annotation>
+    <xs:documentation>Options for hypervisor feature enablement.</xs:documentation>
+  </xs:annotation>
+
+  <xs:all>
+    <xs:element name="RELOC" type="Boolean" />
+    <xs:element name="SCHEDULER" type="SchedulerType" />
+    <xs:element name="MULTIBOOT2" type="Boolean" />
+    <xs:element name="RDT" type="RdtType" />
+    <xs:element name="HYPERV_ENABLED" type="Boolean" />
+    <xs:element name="IOMMU_ENFORCE_SNP" type="Boolean" />
+    <xs:element name="ACPI_PARSE_ENABLED" type="Boolean" />
+    <xs:element name="L1D_VMENTRY_ENABLED" type="Boolean" />
+    <xs:element name="MCE_ON_PSC_DISABLED" type="Boolean" />
+    <xs:element name="IVSHMEM" type="IvshmemInfo" />
+    <xs:element name="PSRAM" minOccurs="0" type="Boolean" />
+  </xs:all>
+</xs:complexType>
+
+<xs:complexType name="MemoryOptionsType">
+  <xs:all>
+    <xs:element name="STACK_SIZE" type="HexFormat" />
+    <xs:element name="HV_RAM_SIZE" type="HvRamSizeType" />
+    <xs:element name="HV_RAM_START" type="HvRamStartType" />
+    <xs:element name="LOW_RAM_SIZE" type="HexFormat" />
+    <xs:element name="UOS_RAM_SIZE" type="HexFormat" />
+    <xs:element name="SOS_RAM_SIZE" type="HexFormat" />
+    <xs:element name="PLATFORM_RAM_SIZE" type="HexFormat" />
+  </xs:all>
+</xs:complexType>
+
+<xs:complexType name="capacitiesOptionsType">
+  <xs:all>
+    <xs:element name="IOMMU_BUS_NUM" type="HexFormat" />
+    <xs:element name="MAX_IR_ENTRIES" type="xs:integer" />
+    <xs:element name="MAX_IOAPIC_NUM" type="MaxIoapicNumType" />
+    <xs:element name="MAX_KATA_VM_NUM" type="xs:integer" minOccurs="0" />
+    <xs:element name="MAX_PCI_DEV_NUM" type="MaxPciDevNumType" />
+    <xs:element name="MAX_IOAPIC_LINES" type="MaxIoapicLinesType" />
+    <xs:element name="MAX_PT_IRQ_ENTRIES" type="xs:integer" />
+    <xs:element name="MAX_MSIX_TABLE_NUM" type="MaxMsixTableNumType" />
+    <xs:element name="MAX_EMULATED_MMIO" type="MaxEmulatedMmioType" />
+  </xs:all>
+</xs:complexType>
+
+<xs:complexType name="MiscCfgOptionsType">
+  <xs:all>
+    <xs:element name="GPU_SBDF" type="HexFormat" />
+    <xs:element name="UEFI_OS_LOADER_NAME" type="xs:string" minOccurs="0" />
+  </xs:all>
+</xs:complexType>
+
+<xs:complexType name="HvConfigType">
+  <xs:all>
+    <xs:element name="DEBUG_OPTIONS" type="DebugOptionsType" />
+    <xs:element name="FEATURES" type="FeatureOptionsType" />
+    <xs:element name="MEMORY" type="MemoryOptionsType" />
+    <xs:element name="CAPACITIES" type="capacitiesOptionsType" />
+    <xs:element name="MISC_CFG" type="MiscCfgOptionsType" />
+  </xs:all>
+</xs:complexType>
+
+<xs:complexType name="VMConfigType">
+  <xs:all>
+    <xs:element name="vm_type" type="VmOptionsType" />
+    <xs:element name="name" type="VmNameLimitation" minOccurs="0" />
+    <xs:element name="guest_flags" type="GuestFlagsInfo" minOccurs="0" />
+    <xs:element name="cpu_affinity" type="CpuAffinityConfiguration" minOccurs="0" />
+    <xs:element name="clos" type="ClosConfiguration" />
+    <xs:element name="epc_section" type="EpcSection" minOccurs="0" />
+    <xs:element name="memory" type="MemoryInfo" minOccurs="0" />
+    <xs:element name="os_config" type="OsConfigurations" minOccurs="0" />
+    <xs:element name="legacy_vuart" type="LegancyVuartConfiguration" minOccurs="2" maxOccurs="2" />
+    <xs:element name="console_vuart" type="ConsoleVuartConfiguration" />
+    <xs:element name="communication_vuart" type="CommunicationVuartConfiguration" maxOccurs="unbounded" />
+    <xs:element name="mmio_resources" type="MmioResourcesConfiguration" minOccurs="0" />
+    <xs:element name="pt_intx" minOccurs="0" />
+    <xs:element name="pci_devs" type="PciDevsConfiguration" minOccurs="0" />
+    <xs:element name="board_private" type="BoardPrivateConfiguration" minOccurs="0" />
+  </xs:all>
+  <xs:attribute name="id" type="xs:string" />
+</xs:complexType>
+
+<xs:complexType name="ACRNConfigType">
+  <xs:all>
+    <xs:element name="hv" type="HvConfigType" />
+    <xs:element name="vm" type="VMConfigType" maxOccurs="unbounded" />
+  </xs:all>
+  <xs:attribute name="board" type="xs:string" use="required"/>
+  <xs:attribute name="scenario" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:element name="acrn-config" type="ACRNConfigType" />
+
+</xs:schema>
