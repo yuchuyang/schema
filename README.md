@@ -1,5 +1,12 @@
 # Validate xml against xsd
 
+## Pre-requirement
+
+Install xmlschema package
+    ```
+    $ pip install xmlschema
+    ```
+
 ## Steps
 
 This folder contains a simple python script and xsd to validate scenario xml against xsd.
